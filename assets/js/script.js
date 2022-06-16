@@ -23,25 +23,22 @@
 
 // data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-let website = 'github.com';
-// API #1
-fetch(`https://http-observatory.security.mozilla.org/api/v1/analyze?host=${website}`)
+let website = 'mozilla.org';
+// Mozilla host security checker api
+function scanHost(url){
+    fetch(`https://http-observatory.security.mozilla.org/api/v1/analyze?host=${url}&rescan=true`,
+    {
+        method: 'POST'
+    })
     .then(function (response) {
         return response.json();
     })
     .then(function(data){
         console.log(data);
     })
+}
+scanHost(website);
 
-// API #2
-// fetch(`https://developers.checkphish.ai/api/neo/scan`)
-//     .then(function (response) {
-//         return response.json();
-//     })
-//     .then(function(data){
-
-//     })
-// API #3
 
 // app ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -91,17 +88,26 @@ genScanLabel();
 
 
 // scale
+const scaleContainer = $('<div class="row">');
 function genScale(grade){
-    const scaleContainer = $('<div class="row">');
+    scaleContainer.empty();
     let scaleArea = $('<div class="col-12 d-flex justify-content-center">');
-        let scaleBarGroup = $('<div class="progress col-6 m-5">');
-            let scaleBar = $('<div class="progress-bar" role="progressbar">');
+        let scaleBarGroup = $('<div class="progress col-6 p-0">');
+            let scaleBar = $('<div class="progress-bar" role="progressbar">')
+                .css('width', `${grade}%`);
+            if(grade > 74){
+                scaleBar.addClass('bg-success');
+            }else if(grade > 24){
+                scaleBar.addClass('bg-warning');
+            }else{
+                scaleBar.addClass('bg-danger');
+            }
             scaleBarGroup.append(scaleBar);
         scaleArea.append(scaleBarGroup);
     scaleContainer.append(scaleArea);
     root.append(scaleContainer);
 }
-genScale();
+genScale(50);
 
 
 // more info page
